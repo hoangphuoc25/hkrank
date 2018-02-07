@@ -30,7 +30,6 @@ data Expr = Add Expr Expr
           | Mul Expr Expr
           | Div Expr Expr
           | Neg Expr
-          | Parens Expr
           | Lit [(Integer,Integer)]
           deriving (Show)
 
@@ -112,7 +111,8 @@ main = do
   noQueries <- read <$> getLine
   queries <- mapM (\_ -> getLine) [1..noQueries]
   let noSpace = map (filter (/=' ')) queries
-  forM_ [0..noQueries-1] $ \i -> do
-    case (parse expr "" (noSpace!!i)) of
-      Left error -> print "error"
-      Right parsed -> putStrLn $ printExpr $ eval parsed
+  mapM_ (\i -> do 
+      case (parse expr "" i) of
+        Left error -> print "error"
+        Right parsed -> putStrLn $ printExpr $ eval parsed
+    ) noSpace
